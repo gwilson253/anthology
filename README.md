@@ -1,4 +1,4 @@
-# Greg Wilson - Music Hosting App V2
+# Anthology - Artist Catalog
 
 A minimalist, high-impact music portfolio tailored for Greg Wilson. Features dynamic UI generation from album art, seamless persistent audio playback, and a secure Supabase backend.
 
