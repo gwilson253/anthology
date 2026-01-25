@@ -1,16 +1,84 @@
-# React + Vite
+# Greg Wilson - Music Hosting App V2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A minimalist, high-impact music portfolio tailored for Greg Wilson. Features dynamic UI generation from album art, seamless persistent audio playback, and a secure Supabase backend.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Dynamic Backgrounds:** Homepage styling adapts automatically to your latest album's cover art using `node-vibrant`.
+- **Minimalist Audio Player:** Custom-built player with persistent state across navigation.
+- **Album Ordering:** Manual control over album display order.
+- **Rich Content:** Support for album and track descriptions/liner notes.
+- **Secure Backend:** Powered by Supabase for real-time data and file storage.
 
-## React Compiler
+## 🛠️ Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Docker Desktop** (installed and running)
+- *Optional:* Node.js 20+ (if running without Docker)
 
-## Expanding the ESLint configuration
+## 🚀 Quick Start (Local Development)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd antigravity_test
+    ```
+
+2.  **Configure Environment:**
+    Create a `.env.local` file in the root directory. You can copy the structure from `.env.example` if available, or use your Supabase keys:
+    ```env
+    VITE_SUPABASE_URL=https://your-project-id.supabase.co
+    VITE_SUPABASE_ANON_KEY=your-anon-key
+    ```
+    *Note: `.env.local` is git-ignored for security.*
+
+3.  **Start with Docker:**
+    ```bash
+    docker-compose up
+    ```
+    Access the app at: [http://localhost:5173](http://localhost:5173)
+
+## 🗄️ Database Setup (Supabase)
+
+The app requires two tables in your Supabase project: `albums` and `tracks`.
+
+### Schema
+Run the following SQL in your Supabase SQL Editor to set up the latest schema:
+
+```sql
+-- Create Albums Table
+create table albums (
+  id bigint primary key generated always as identity,
+  created_at timestamptz default now(),
+  title text not null,
+  artist text not null,
+  cover_url text,
+  description text,
+  display_order integer default 0
+);
+
+-- Create Tracks Table
+create table tracks (
+  id bigint primary key generated always as identity,
+  created_at timestamptz default now(),
+  title text not null,
+  file_url text not null,
+  duration text,
+  album_id bigint references albums(id),
+  track_number integer,
+  description text
+);
+```
+
+### Storage
+- Create a public storage bucket named `covers`.
+- Create a public storage bucket named `music`.
+
+## 📦 Project Structure
+
+- `src/components`: UI components (Player, AlbumGrid, AlbumDetail).
+- `src/supabaseClient.js`: Supabase connection client.
+- `src/App.jsx`: Main application logic and routing.
+
+## © Copyright
+
+&copy; 2026 Greg Wilson. All rights reserved.
