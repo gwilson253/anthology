@@ -92,6 +92,12 @@ create table tracks (
 - `src/supabaseClient.js`: Supabase connection client.
 - `src/App.jsx`: Main application logic and routing.
 
+## 🗺️ Roadmap
+- [ ] **Mobile Optimization:** Fix horizontal overflow issues on small screens.
+- [ ] **Sharing Links:** Implement routing for shareable URLs to albums/tracks.
+- [ ] **Bio & Press:** New dedicated section for artist biography and imagery.
+- [ ] **Social Links:** Footer integration for SoundCloud, BandCamp, and YouTube.
+
 ## © Copyright
 
 &copy; 2026 Greg Wilson. All rights reserved.
