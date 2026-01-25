@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
 import AlbumGrid from './components/AlbumGrid';
 import AlbumDetail from './components/AlbumDetail';
+import Player from './components/Player';
 import { MOCK_ALBUMS } from './mockData';
 
 function App() {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayTrack = (track, artist) => {
+    setCurrentTrack({ ...track, artist });
+    setIsPlaying(true);
+  };
+
+  const handlePlayAlbum = (album) => {
+    if (album.tracks.length > 0) {
+      handlePlayTrack(album.tracks[0], album.artist);
+    }
+  };
 
   return (
     <div className="app-container">
@@ -25,15 +39,18 @@ function App() {
         <AlbumDetail
           album={selectedAlbum}
           onBack={() => setSelectedAlbum(null)}
+          onPlayTrack={(track) => handlePlayTrack(track, selectedAlbum.artist)}
+          onPlayAlbum={() => handlePlayAlbum(selectedAlbum)}
         />
       )}
 
-      {/* Floating Audio Player (Future Implementation) */}
-      <div className="mini-player-placeholder minimal-glass">
-        <div className="player-content">
-          <p>Select a track to start listening</p>
-        </div>
-      </div>
+      <Player
+        track={currentTrack}
+        isPlaying={isPlaying}
+        onPlayPause={() => setIsPlaying(!isPlaying)}
+        onNext={() => console.log('Next track')}
+        onPrev={() => console.log('Prev track')}
+      />
 
       <style jsx="true">{`
         .app-container {
@@ -62,27 +79,6 @@ function App() {
           margin: 0.5rem 0 0;
         }
 
-        .mini-player-placeholder {
-          position: fixed;
-          bottom: 2rem;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 90%;
-          max-width: 600px;
-          height: 80px;
-          border-radius: 100px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 100;
-          opacity: 0.8;
-        }
-
-        .player-content p {
-          margin: 0;
-          font-size: 0.9rem;
-          color: var(--text-secondary);
-        }
       `}</style>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Vibrant } from 'node-vibrant/browser';
 import { ChevronLeft, Play } from 'lucide-react';
 
-const AlbumDetail = ({ album, onBack }) => {
+const AlbumDetail = ({ album, onBack, onPlayTrack, onPlayAlbum }) => {
   const [colors, setColors] = useState(null);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const AlbumDetail = ({ album, onBack }) => {
           <h1>{album.title}</h1>
 
           <div className="action-row">
-            <button className="play-button">
+            <button className="play-button" onClick={onPlayAlbum}>
               <Play size={20} fill="currentColor" />
               <span>Play Album</span>
             </button>
@@ -52,7 +52,7 @@ const AlbumDetail = ({ album, onBack }) => {
 
           <div className="track-list">
             {album.tracks.map((track, index) => (
-              <div key={track.id} className="track-item">
+              <div key={track.id} className="track-item" onClick={() => onPlayTrack(track)}>
                 <span className="track-index">{index + 1}</span>
                 <span className="track-title">{track.title}</span>
                 <span className="track-duration">{track.duration}</span>
