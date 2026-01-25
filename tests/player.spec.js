@@ -3,7 +3,8 @@ import { test, expect } from '@playwright/test';
 test('player appears when track is clicked', async ({ page }) => {
     await page.goto('http://localhost:5173');
 
-    // Click first album
+    // Click first album (wait for fetch)
+    await page.waitForSelector('.album-card', { timeout: 10000 });
     await page.click('.album-card');
 
     // Wait for detail view
