@@ -42,6 +42,7 @@ const AlbumDetail = ({ album, onBack, onPlayTrack, onPlayAlbum }) => {
         <div className="detail-info">
           <p className="artist-label">{album.artist}</p>
           <h1>{album.title}</h1>
+          {album.description && <p className="album-description">{album.description}</p>}
 
           <div className="action-row">
             <button className="play-button" onClick={onPlayAlbum}>
@@ -54,7 +55,10 @@ const AlbumDetail = ({ album, onBack, onPlayTrack, onPlayAlbum }) => {
             {album.tracks.map((track, index) => (
               <div key={track.id} className="track-item" onClick={() => onPlayTrack(track)}>
                 <span className="track-index">{index + 1}</span>
-                <span className="track-title">{track.title}</span>
+                <div className="track-info-col">
+                  <span className="track-title">{track.title}</span>
+                  {track.description && <span className="track-desc">{track.description}</span>}
+                </div>
                 <span className="track-duration">{track.duration}</span>
               </div>
             ))}
@@ -101,17 +105,20 @@ const AlbumDetail = ({ album, onBack, onPlayTrack, onPlayAlbum }) => {
         }
 
         .detail-artwork {
-          flex: 0 0 400px;
-          aspect-ratio: 1;
+          flex: 0 0 auto;
+          width: 100%;
+          max-width: 400px;
           border-radius: 12px;
           overflow: hidden;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          align-self: flex-start;
         }
 
         .detail-artwork img {
           width: 100%;
-          height: 100%;
-          object-fit: cover;
+          height: auto;
+          display: block;
+          object-fit: contain;
         }
 
         .detail-info {
@@ -131,6 +138,14 @@ const AlbumDetail = ({ album, onBack, onPlayTrack, onPlayAlbum }) => {
           font-size: 4rem;
           margin: 0.5rem 0 2rem;
           line-height: 1.1;
+        }
+
+        .album-description {
+          font-size: 1.1rem;
+          line-height: 1.6;
+          margin: 0 0 2rem;
+          opacity: 0.9;
+          max-width: 600px;
         }
 
         .play-button {
@@ -181,9 +196,20 @@ const AlbumDetail = ({ album, onBack, onPlayTrack, onPlayAlbum }) => {
           font-size: 0.9rem;
         }
 
-        .track-title {
+        .track-info-col {
           flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .track-title {
           font-weight: 500;
+        }
+
+        .track-desc {
+          font-size: 0.85rem;
+          opacity: 0.6;
+          margin-top: 2px;
         }
 
         .track-duration {
