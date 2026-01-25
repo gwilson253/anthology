@@ -37,6 +37,19 @@ A minimalist, high-impact music portfolio tailored for Greg Wilson. Features dyn
     ```
     Access the app at: [http://localhost:5173](http://localhost:5173)
 
+### Option B: Run with Node.js (No Docker)
+
+1.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Start Development Server:**
+    ```bash
+    npm run dev
+    ```
+    Access the app at: [http://localhost:5173](http://localhost:5173)
+
 ## 🗄️ Database Setup (Supabase)
 
 The app requires two tables in your Supabase project: `albums` and `tracks`.
