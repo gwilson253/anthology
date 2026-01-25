@@ -62,8 +62,7 @@ function App() {
       const fullAlbums = albumsData.map(album => ({
         ...album,
         // map database column names to our app's expected props if needed
-        // Fix: Encode the URL to handle special characters like spaces and &
-        cover: album.cover_url ? encodeURI(album.cover_url).replace(/&/g, '%26') : null,
+        cover: album.cover_url,
         description: album.description,
         tracks: tracksData
           .filter(t => t.album_id === album.id)
