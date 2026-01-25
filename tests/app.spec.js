@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('has music library title', async ({ page }) => {
     await page.goto('http://localhost:5173'); // Use service name if running inside docker network
-    await expect(page.locator('h1')).toContainText('Music Library');
+    await expect(page.locator('h1')).toContainText('Greg Wilson | Albums');
 });
 
 test('can view album details', async ({ page }) => {
