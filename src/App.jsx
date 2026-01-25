@@ -2,12 +2,59 @@ import React, { useState } from 'react';
 import AlbumGrid from './components/AlbumGrid';
 import AlbumDetail from './components/AlbumDetail';
 import Player from './components/Player';
-import { MOCK_ALBUMS } from './mockData';
+import { supabase } from './supabaseClient';
 
 function App() {
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [albums, setAlbums] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    getAlbums();
+  }, []);
+
+  async function getAlbums() {
+    try {
+      setLoading(true);
+      // Fetch albums
+      const { data: albumsData, error: albumsError } = await supabase
+        .from('albums')
+        .select('*');
+
+      if (albumsError) throw albumsError;
+
+      // Fetch tracks for all albums
+      const { data: tracksData, error: tracksError } = await supabase
+        .from('tracks')
+        .select('*');
+
+      if (tracksError) throw tracksError;
+
+      // Combine them
+      const fullAlbums = albumsData.map(album => ({
+        ...album,
+        // map database column names to our app's expected props if needed
+        cover: album.cover_url,
+        tracks: tracksData
+          .filter(t => t.album_id === album.id)
+          .sort((a, b) => a.track_number - b.track_number)
+          .map(t => ({
+            id: t.id,
+            title: t.title,
+            duration: t.duration,
+            url: t.file_url
+          }))
+      }));
+
+      setAlbums(fullAlbums);
+    } catch (error) {
+      console.error('Error loading music:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handlePlayTrack = (track, artist) => {
     setCurrentTrack({ ...track, artist });
@@ -31,7 +78,7 @@ function App() {
             </div>
           </header>
           <AlbumGrid
-            albums={MOCK_ALBUMS}
+            albums={albums}
             onSelectAlbum={(album) => setSelectedAlbum(album)}
           />
         </main>
