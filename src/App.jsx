@@ -84,6 +84,69 @@ function App() {
     }
   }
 
+  const findTrackLocation = (trackId) => {
+    for (let i = 0; i < albums.length; i++) {
+      const album = albums[i];
+      const trackIndex = album.tracks.findIndex(t => t.id === trackId);
+      if (trackIndex !== -1) {
+        return { albumIndex: i, trackIndex, album };
+      }
+    }
+    return null;
+  };
+
+  const handleNext = () => {
+    if (!currentTrack) return;
+    const loc = findTrackLocation(currentTrack.id);
+    if (!loc) return;
+
+    const { albumIndex, trackIndex, album } = loc;
+
+    // Check if next track exists in current album
+    if (trackIndex < album.tracks.length - 1) {
+      handlePlayTrack(album.tracks[trackIndex + 1], album.artist);
+    }
+    // Check if next album exists
+    else if (albumIndex < albums.length - 1) {
+      const nextAlbum = albums[albumIndex + 1];
+      if (nextAlbum.tracks.length > 0) {
+        handlePlayTrack(nextAlbum.tracks[0], nextAlbum.artist);
+      }
+    }
+    // Wrap to first album
+    else if (albums.length > 0 && albums[0].tracks.length > 0) {
+      const firstAlbum = albums[0];
+      handlePlayTrack(firstAlbum.tracks[0], firstAlbum.artist);
+    }
+  };
+
+  const handlePrev = () => {
+    if (!currentTrack) return;
+    const loc = findTrackLocation(currentTrack.id);
+    if (!loc) return;
+
+    const { albumIndex, trackIndex, album } = loc;
+
+    // Check if prev track exists in current album
+    if (trackIndex > 0) {
+      handlePlayTrack(album.tracks[trackIndex - 1], album.artist);
+    }
+    // Check if prev album exists
+    else if (albumIndex > 0) {
+      const prevAlbum = albums[albumIndex - 1];
+      if (prevAlbum.tracks.length > 0) {
+        handlePlayTrack(prevAlbum.tracks[prevAlbum.tracks.length - 1], prevAlbum.artist);
+      }
+    }
+    // Wrap to last album
+    else if (albums.length > 0) {
+      const lastAlbum = albums[albums.length - 1];
+      if (lastAlbum.tracks.length > 0) {
+        handlePlayTrack(lastAlbum.tracks[lastAlbum.tracks.length - 1], lastAlbum.artist);
+      }
+    }
+  };
+
   const handlePlayTrack = (track, artist) => {
     setCurrentTrack({ ...track, artist });
     setIsPlaying(true);
@@ -129,8 +192,8 @@ function App() {
         track={currentTrack}
         isPlaying={isPlaying}
         onPlayPause={() => setIsPlaying(!isPlaying)}
-        onNext={() => console.log('Next track')}
-        onPrev={() => console.log('Prev track')}
+        onNext={handleNext}
+        onPrev={handlePrev}
       />
 
       <style jsx="true">{`
