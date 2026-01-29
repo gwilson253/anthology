@@ -58,13 +58,13 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
 
                 <div className="controls-center">
                     <div className="playback-buttons">
-                        <button className="control-btn secondary" onClick={onPrev}>
+                        <button className="control-btn secondary" onClick={onPrev} aria-label="Previous track">
                             <SkipBack size={20} />
                         </button>
-                        <button className="control-btn primary" onClick={onPlayPause}>
+                        <button className="control-btn primary" onClick={onPlayPause} aria-label={isPlaying ? "Pause" : "Play"}>
                             {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
                         </button>
-                        <button className="control-btn secondary" onClick={onNext}>
+                        <button className="control-btn secondary" onClick={onNext} aria-label="Next track">
                             <SkipForward size={20} />
                         </button>
                     </div>
