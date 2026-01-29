@@ -21,7 +21,9 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
             const current = audioRef.current.currentTime;
             const total = audioRef.current.duration;
             setProgress((current / total) * 100);
-            setDuration(total);
+            if (total !== duration) {
+                setDuration(total);
+            }
         }
     };
 
