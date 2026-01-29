@@ -60,3 +60,49 @@ test('player appears when track is clicked', async ({ page }) => {
     const trackTitle = await page.locator('.track-item >> nth=0 >> .track-title').innerText();
     await expect(page.locator('.player-content .track-title')).toHaveText(trackTitle);
 });
+
+test('player controls have accessible labels', async ({ page }) => {
+    // Mock Supabase requests
+    await page.route('**/rest/v1/albums*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(mockAlbums)
+        });
+    });
+
+    await page.route('**/rest/v1/tracks*', async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(mockTracks)
+        });
+    });
+
+    await page.goto('/');
+
+    // Click first album (wait for fetch)
+    await page.waitForSelector('.album-card', { timeout: 10000 });
+    await page.click('.album-card');
+
+    // Wait for detail view
+    await expect(page.locator('.detail-info h1')).toBeVisible();
+
+    // Click first track
+    await page.click('.track-item >> nth=0');
+
+    // Verify player appears
+    await expect(page.locator('.player-container')).toBeVisible();
+
+    // Check ARIA labels
+    await expect(page.getByRole('button', { name: 'Previous track' })).toBeVisible();
+
+    // Initial state should be playing (Pause button visible)
+    await expect(page.getByRole('button', { name: 'Pause' })).toBeVisible();
+
+    // Toggle play/pause
+    await page.getByRole('button', { name: 'Pause' }).click();
+    await expect(page.getByRole('button', { name: 'Play', exact: true })).toBeVisible();
+
+    await expect(page.getByRole('button', { name: 'Next track' })).toBeVisible();
+});
