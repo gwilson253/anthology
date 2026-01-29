@@ -10,7 +10,7 @@ const AlbumGrid = ({ albums, onSelectAlbum }) => {
                     onClick={() => onSelectAlbum(album)}
                 >
                     <div className="album-artwork-container">
-                        <img src={album.cover} alt={album.title} className="album-artwork" />
+                        <img src={album.cover} alt={album.title} className="album-artwork" loading="lazy" />
                         <div className="album-overlay" />
                     </div>
                     <div className="album-info">
