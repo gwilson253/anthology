@@ -1,25 +1,24 @@
 import { test, expect } from '@playwright/test';
 
-const mockAlbums = [
+const mockJoinedData = [
   {
     id: 1,
     title: 'Album One',
     artist: 'Artist One',
     cover_url: 'http://localhost/cover1.jpg',
     description: 'Description One',
-    display_order: 1
-  }
-];
-
-const mockTracks = [
-  {
-    id: 101,
-    title: 'Track One',
-    file_url: 'http://localhost/track1.mp3',
-    duration: '3:00',
-    album_id: 1,
-    track_number: 1,
-    description: 'Track 1 desc'
+    display_order: 1,
+    tracks: [
+      {
+        id: 101,
+        title: 'Track One',
+        file_url: 'http://localhost/track1.mp3',
+        duration: '3:00',
+        album_id: 1,
+        track_number: 1,
+        description: 'Track 1 desc'
+      }
+    ]
   }
 ];
 
@@ -29,15 +28,7 @@ test('player appears when track is clicked', async ({ page }) => {
         await route.fulfill({
             status: 200,
             contentType: 'application/json',
-            body: JSON.stringify(mockAlbums)
-        });
-    });
-
-    await page.route('**/rest/v1/tracks*', async route => {
-        await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify(mockTracks)
+            body: JSON.stringify(mockJoinedData)
         });
     });
 
