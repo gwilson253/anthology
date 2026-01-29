@@ -42,31 +42,21 @@ function App() {
   async function getAlbums() {
     try {
       setLoading(true);
-      // Fetch albums
+      // Fetch albums and tracks in a single query
       const { data: albumsData, error: albumsError } = await supabase
         .from('albums')
-        .select('*')
-        .order('display_order', { ascending: true });
+        .select('*, tracks(*)')
+        .order('display_order', { ascending: true })
+        .order('track_number', { foreignTable: 'tracks', ascending: true });
 
       if (albumsError) throw albumsError;
 
-      // Fetch tracks for all albums
-      const { data: tracksData, error: tracksError } = await supabase
-        .from('tracks')
-        .select('*');
-
-      if (tracksError) throw tracksError;
-
-      // Combine them
-      // Combine them
       const fullAlbums = albumsData.map(album => ({
         ...album,
         // map database column names to our app's expected props if needed
         cover: album.cover_url,
         description: album.description,
-        tracks: tracksData
-          .filter(t => t.album_id === album.id)
-          .sort((a, b) => a.track_number - b.track_number)
+        tracks: (album.tracks || [])
           .map(t => ({
             id: t.id,
             title: t.title,

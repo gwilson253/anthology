@@ -1,13 +1,33 @@
 import { test, expect } from '@playwright/test';
 
-const mockAlbums = [
+const mockJoinedData = [
   {
     id: 1,
     title: 'Album One',
     artist: 'Artist One',
     cover_url: 'http://localhost/cover1.jpg',
     description: 'Description One',
-    display_order: 1
+    display_order: 1,
+    tracks: [
+      {
+        id: 101,
+        title: 'Track One',
+        file_url: 'http://localhost/track1.mp3',
+        duration: '3:00',
+        album_id: 1,
+        track_number: 1,
+        description: 'Track 1 desc'
+      },
+      {
+        id: 102,
+        title: 'Track Two',
+        file_url: 'http://localhost/track2.mp3',
+        duration: '3:30',
+        album_id: 1,
+        track_number: 2,
+        description: 'Track 2 desc'
+      }
+    ]
   },
   {
     id: 2,
@@ -15,37 +35,18 @@ const mockAlbums = [
     artist: 'Artist Two',
     cover_url: 'http://localhost/cover2.jpg',
     description: 'Description Two',
-    display_order: 2
-  }
-];
-
-const mockTracks = [
-  {
-    id: 101,
-    title: 'Track One',
-    file_url: 'http://localhost/track1.mp3',
-    duration: '3:00',
-    album_id: 1,
-    track_number: 1,
-    description: 'Track 1 desc'
-  },
-  {
-    id: 102,
-    title: 'Track Two',
-    file_url: 'http://localhost/track2.mp3',
-    duration: '3:30',
-    album_id: 1,
-    track_number: 2,
-    description: 'Track 2 desc'
-  },
-  {
-    id: 201,
-    title: 'Track Three',
-    file_url: 'http://localhost/track3.mp3',
-    duration: '4:00',
-    album_id: 2,
-    track_number: 1,
-    description: 'Track 3 desc'
+    display_order: 2,
+    tracks: [
+      {
+        id: 201,
+        title: 'Track Three',
+        file_url: 'http://localhost/track3.mp3',
+        duration: '4:00',
+        album_id: 2,
+        track_number: 1,
+        description: 'Track 3 desc'
+      }
+    ]
   }
 ];
 
@@ -55,15 +56,7 @@ test('Player navigation (next/prev) works correctly', async ({ page }) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(mockAlbums)
-    });
-  });
-
-  await page.route('**/rest/v1/tracks*', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(mockTracks)
+      body: JSON.stringify(mockJoinedData)
     });
   });
 
