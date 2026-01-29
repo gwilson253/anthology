@@ -84,15 +84,20 @@ function App() {
     }
   }
 
-  const findTrackLocation = (trackId) => {
+  const trackLocationMap = React.useMemo(() => {
+    const map = new Map();
     for (let i = 0; i < albums.length; i++) {
       const album = albums[i];
-      const trackIndex = album.tracks.findIndex(t => t.id === trackId);
-      if (trackIndex !== -1) {
-        return { albumIndex: i, trackIndex, album };
+      for (let j = 0; j < album.tracks.length; j++) {
+        const track = album.tracks[j];
+        map.set(track.id, { albumIndex: i, trackIndex: j, album });
       }
     }
-    return null;
+    return map;
+  }, [albums]);
+
+  const findTrackLocation = (trackId) => {
+    return trackLocationMap.get(trackId) || null;
   };
 
   const handleNext = () => {
