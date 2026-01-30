@@ -5,6 +5,7 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
     const audioRef = useRef(null);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
 
     useEffect(() => {
         if (track && audioRef.current) {
@@ -20,6 +21,7 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
         if (audioRef.current) {
             const current = audioRef.current.currentTime;
             const total = audioRef.current.duration;
+            setCurrentTime(current);
             setProgress((current / total) * 100);
             setDuration(total);
         }
@@ -30,6 +32,16 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
         const clickX = e.nativeEvent.offsetX;
         const newTime = (clickX / width) * audioRef.current.duration;
         audioRef.current.currentTime = newTime;
+    };
+
+    const handleKeyDown = (e) => {
+        if (!audioRef.current) return;
+        const skipAmount = 5; // 5 seconds
+        if (e.key === 'ArrowRight') {
+            audioRef.current.currentTime = Math.min(audioRef.current.currentTime + skipAmount, audioRef.current.duration);
+        } else if (e.key === 'ArrowLeft') {
+            audioRef.current.currentTime = Math.max(audioRef.current.currentTime - skipAmount, 0);
+        }
     };
 
     const formatTime = (time) => {
@@ -58,20 +70,30 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
 
                 <div className="controls-center">
                     <div className="playback-buttons">
-                        <button className="control-btn secondary" onClick={onPrev}>
+                        <button className="control-btn secondary" onClick={onPrev} aria-label="Previous track">
                             <SkipBack size={20} />
                         </button>
-                        <button className="control-btn primary" onClick={onPlayPause}>
+                        <button className="control-btn primary" onClick={onPlayPause} aria-label={isPlaying ? "Pause" : "Play"}>
                             {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
                         </button>
-                        <button className="control-btn secondary" onClick={onNext}>
+                        <button className="control-btn secondary" onClick={onNext} aria-label="Next track">
                             <SkipForward size={20} />
                         </button>
                     </div>
 
                     <div className="progress-section">
-                        <span className="time">{formatTime(audioRef.current?.currentTime)}</span>
-                        <div className="progress-bar-container" onClick={handleSeek}>
+                        <span className="time">{formatTime(currentTime)}</span>
+                        <div
+                            className="progress-bar-container"
+                            onClick={handleSeek}
+                            role="slider"
+                            aria-label="Seek slider"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-valuenow={progress}
+                            tabIndex={0}
+                            onKeyDown={handleKeyDown}
+                        >
                             <div className="progress-bar" style={{ width: `${progress}%` }} />
                         </div>
                         <span className="time">{formatTime(duration)}</span>
