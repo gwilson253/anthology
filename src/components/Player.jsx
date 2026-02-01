@@ -5,6 +5,7 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
     const audioRef = useRef(null);
     const [progress, setProgress] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
 
     useEffect(() => {
         if (track && audioRef.current) {
@@ -22,6 +23,7 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
             const total = audioRef.current.duration;
             setProgress((current / total) * 100);
             setDuration(total);
+            setCurrentTime(current);
         }
     };
 
@@ -58,19 +60,31 @@ const Player = ({ track, isPlaying, onPlayPause, onNext, onPrev }) => {
 
                 <div className="controls-center">
                     <div className="playback-buttons">
-                        <button className="control-btn secondary" onClick={onPrev}>
+                        <button
+                            className="control-btn secondary"
+                            onClick={onPrev}
+                            aria-label="Previous track"
+                        >
                             <SkipBack size={20} />
                         </button>
-                        <button className="control-btn primary" onClick={onPlayPause}>
+                        <button
+                            className="control-btn primary"
+                            onClick={onPlayPause}
+                            aria-label={isPlaying ? "Pause" : "Play"}
+                        >
                             {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
                         </button>
-                        <button className="control-btn secondary" onClick={onNext}>
+                        <button
+                            className="control-btn secondary"
+                            onClick={onNext}
+                            aria-label="Next track"
+                        >
                             <SkipForward size={20} />
                         </button>
                     </div>
 
                     <div className="progress-section">
-                        <span className="time">{formatTime(audioRef.current?.currentTime)}</span>
+                        <span className="time">{formatTime(currentTime)}</span>
                         <div className="progress-bar-container" onClick={handleSeek}>
                             <div className="progress-bar" style={{ width: `${progress}%` }} />
                         </div>
